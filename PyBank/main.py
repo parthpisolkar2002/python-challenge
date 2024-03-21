@@ -9,7 +9,7 @@ difference = {} # Dictionary to store differences between consecutive months
 dates = {} # Dictionary to store dates and corresponding profit/loss
 
 # Path to the CSV file
-budget_path = os.path.join('python-challenge','PyBank','Resources','budget_data.csv')
+budget_path = os.path.join('PyBank','Resources','budget_data.csv')
 
 # Opening the CSV file
 with open(budget_path) as csvfile:
@@ -44,8 +44,21 @@ maxdec_date = min(difference, key=difference.get)
 maxdec = difference[maxdec_date]
 
 # Printing the results
+print("Financial Analysis")
+print("----------------------------------------")
 print(f"Total Months: {month_count} months")
 print(f"Total Profit/Loss: ${tot_pl}")
 print(f"Average Difference: ${avg_changes}")
 print(f"Greatest Increase in Profits: {maxinc_date} (${maxinc})")
 print(f"Greatest Decrease in Profits: {maxdec_date} (${maxdec})")
+
+# Write results to a text file
+output_file = os.path.join('PyBank','analysis','profit_loss.txt')
+with open(output_file, "w") as file:
+    file.write("Financial Analysis\n")
+    file.write("-------------------------------------------\n")
+    file.write(f"Total Months: {month_count} months\n")
+    file.write(f"Total Profit/Loss: ${tot_pl}\n")
+    file.write(f"Average Difference: ${avg_changes}\n")
+    file.write(f"Greatest Increase in Profits: {maxinc_date} (${maxinc})\n")
+    file.write(f"Greatest Decrease in Profits: {maxdec_date} (${maxdec})\n")

@@ -1,7 +1,7 @@
 import os
 import csv
 
-election_path = os.path.join('python-challenge','PyPoll','Resources','election_data.csv')
+election_path = os.path.join('PyPoll','Resources','election_data.csv')
 
 # Initialize variables to store the total votes and votes for each candidate
 total_votes = 0
@@ -44,3 +44,17 @@ print("---------------------------------------------------------")
 winner = max(candidate_votes, key=candidate_votes.get) #finds out the winner using the max number of votes
 print("Winner:", winner)
 print("---------------------------------------------------------")
+
+# Write results to a text file
+output_file = os.path.join('PyPoll','analysis','election_restuls.txt')
+with open(output_file, "w") as file:
+    file.write("Election Results\n")
+    file.write("----------------------------------------\n")
+    file.write(f"Total Votes: {total_votes}\n")
+    file.write("----------------------------------------\n")
+    for candidate, votes in candidate_votes.items():
+        percentage = (votes / total_votes) * 100
+        file.write(f"{candidate}: {percentage:.3f}% ({votes} votes)\n")
+    file.write("----------------------------------------\n")
+    file.write(f"Winner: {winner}\n")
+    file.write("----------------------------------------\n")
