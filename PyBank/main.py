@@ -1,49 +1,51 @@
+# Importing required modules
 import os
 import csv
 
-month_count = 0 #initializing the month count
-tot_pl = 0 #initializing the total profit loss summing variable
-difference = [] #initializing the array which will store the difference betweeen the profits/loss
-oldpl = 0 #initializing the variable required to store the p/l value for the previous time period
-index1 = 0
-index2 = 0
+# Initializing variables
+month_count = 0 # Counts the number of months
+tot_pl = 0 # Total profit/loss
+difference = {} # Dictionary to store differences between consecutive months
+dates = {} # Dictionary to store dates and corresponding profit/loss
 
-budget_path = os.path.join('python-challenge','PyBank','Resources','budget_data.csv') #importing the csv
+# Path to the CSV file
+budget_path = os.path.join('python-challenge','PyBank','Resources','budget_data.csv')
 
+# Opening the CSV file
 with open(budget_path) as csvfile:
-    budget_data = csv.reader(csvfile,delimiter=',') #reading the csv
-    header = next(budget_data) #skipping the header
+    budget_data = csv.reader(csvfile, delimiter=',') # Creating CSV reader
+    header = next(budget_data) # Skipping the header
     
-    for row in budget_data: 
-        month_count += 1 #counting months (assuming no months repeat)
-        tot_pl += int(row[1]) #summing the total profit for dataset
-
-with open(budget_path) as csvfile:
-    budget_data = csv.reader(csvfile,delimiter=',') #re-reading the csv
-    header = next(budget_data) #skipping the header
+    oldpl = None # Initializing old profit/loss to None
     
+    # Looping through each row in the CSV file
     for row in budget_data:
-        cur_pl = int(row[1]) #initializing the current profit value at the beg. of 'for' loop
+        month_count += 1 # Incrementing month count
+        date = row[0] # Extracting date
+        profit_loss = int(row[1]) # Extracting profit/loss value
+        tot_pl += profit_loss # Updating total profit/loss
         
-        if cur_pl != 0: #skipping the first value
-            change = cur_pl - oldpl #calculating change
-            difference.append(change) #adding the change to the array
+        if oldpl is not None: # Skipping first row
+            change = profit_loss - oldpl # Calculating change in profit/loss
+            difference[date] = change # Storing change in the dictionary
+        
+        oldpl = profit_loss # Updating old profit/loss
+        dates[date] = profit_loss # Storing profit/loss for each date
 
-        oldpl = cur_pl #updating the old value of profit loss
+# Calculating average change
+avg_changes = round(sum(difference.values()) / len(difference), 2) if difference else 0
 
-    maxinc = max(difference)
-    index1 = int(difference.index(maxinc))
-    
-    maxdec = min(difference)
-    index2 = int(difference.index(maxdec))
+# Finding date and value for the greatest increase in profits
+maxinc_date = max(difference, key=difference.get)
+maxinc = difference[maxinc_date]
 
-    difference.pop(0) #removing the first difference as it will equal the first value of the p/l
-    avg_changes = round(sum(difference)/len(difference),2) #averaging the values, also rounding to 2 decimals
+# Finding date and value for the greatest decrease in profits
+maxdec_date = min(difference, key=difference.get)
+maxdec = difference[maxdec_date]
 
-
-
-    print(f"Total Months: {month_count} months") #printing month count
-    print(f"Total Profit/Loss: ${tot_pl}") #printing Total Profit/Loss
-    print(f"Average Difference: ${avg_changes}") #printing Avg Changes
-    print(f"Greatest Increase in Profits:  (${maxinc})")
-    print(f"Greatest Decrease in Profits:  (${maxdec})")
+# Printing the results
+print(f"Total Months: {month_count} months")
+print(f"Total Profit/Loss: ${tot_pl}")
+print(f"Average Difference: ${avg_changes}")
+print(f"Greatest Increase in Profits: {maxinc_date} (${maxinc})")
+print(f"Greatest Decrease in Profits: {maxdec_date} (${maxdec})")
